@@ -149,16 +149,16 @@ LASmetrics<-function(LASfile,minht=1.37,above=2) {
   if (class(minht)!="numeric") {stop("The minht parameter is invalid. It is not a numeric input")}
   if (class(above)!="numeric") {stop("The above parameter is invalid. It is not a numeric input")}
   
-  if (class(LASfile)!="matrix") {
-    if (class(LASfile)=="character") {
-      LASfile<-readLAS(LASfile, short=T)
-    } else {
-      stop("The LASfile parameter is invalid. It must either be a matrix or character file path.")
-    }
-  } else {
+  if (class(LASfile) == "character") {
+    LASfile <- readLAS(LASfile, short = T)
+  } else if (class(LASfile) == "matrix") {
     if (!all(colnames(LASfile) %in% c("X","Y","Z","Intensity","ReturnNumber"))) {
       stop("The LASfile parameter is invalid. The matrix colnames must be c('X','Y','Z','Intensity','ReturnNumber')")
     }
+  } else if (class(LASfile) == "LAS") {
+    LASfile <- as.matrix(LASfile@data[,c("X","Y","Z","Intensity","ReturnNumber")])
+  } else {
+    stop("The LASfile parameter is invalid. It must either be a matrix, lidR::LAS object, or character file path.")
   }
 
   MaxZ<-max(LASfile[,"Z"])
