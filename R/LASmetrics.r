@@ -144,11 +144,12 @@
 #'
 #'@importFrom bitops bitAnd bitShiftR
 #'@export
-LASmetrics<-function(LASfile,minht=1.37,above=2) {
+LASmetrics <- function(LASfile, minht = 1.37, above = 2, return.df = TRUE) {
 
   if (class(minht)!="numeric") {stop("The minht parameter is invalid. It is not a numeric input")}
   if (class(above)!="numeric") {stop("The above parameter is invalid. It is not a numeric input")}
-  
+  if (class(return.df)!="logical") {stop("The return.df parameter is invalid. It is not a logical (TRUE/FALSE) input")}
+
   if (class(LASfile) == "character") {
     LASfile <- readLAS(LASfile, short = T)
   } else if (class(LASfile) == "matrix") {
@@ -319,6 +320,12 @@ LASmetrics<-function(LASfile,minht=1.37,above=2) {
                        "Percentage first returns above mode","Percentage.all.returns.above.mean","Percentage all returns above mode","(All returns above mean / Total first returns)*100",
                        "(All returns above mode / Total first returns)* 100","First returns above mean","First returns above mode","All returns above mean","All returns above mode")
   rownames(metrics)<-NULL
-  return(data.frame(metrics))
+
+  if (return.df) {
+    return(data.frame(metrics))
+  } else {
+    return(as.list(metrics))
+  }
+
 }
 
